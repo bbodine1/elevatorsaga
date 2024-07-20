@@ -21,7 +21,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 function getJasmineRequireObj() {
-  if (typeof module !== 'undefined' && module.exports) {
+  if (typeof module !== "undefined" && module.exports) {
     return exports;
   } else {
     window.jasmineRequire = window.jasmineRequire || {};
@@ -29,105 +29,113 @@ function getJasmineRequireObj() {
   }
 }
 
-getJasmineRequireObj().console = function(jRequire, j$) {
+getJasmineRequireObj().console = function (jRequire, j$) {
   j$.ConsoleReporter = jRequire.ConsoleReporter();
 };
 
-getJasmineRequireObj().ConsoleReporter = function() {
-
+getJasmineRequireObj().ConsoleReporter = function () {
   var noopTimer = {
-    start: function(){},
-    elapsed: function(){ return 0; }
+    start: function () {},
+    elapsed: function () {
+      return 0;
+    },
   };
 
   function ConsoleReporter(options) {
     var print = options.print,
       showColors = options.showColors || false,
-      onComplete = options.onComplete || function() {},
+      onComplete = options.onComplete || function () {},
       timer = options.timer || noopTimer,
       specCount,
       failureCount,
       failedSpecs = [],
       pendingCount,
       ansi = {
-        green: '\x1B[32m',
-        red: '\x1B[31m',
-        yellow: '\x1B[33m',
-        none: '\x1B[0m'
+        green: "\x1B[32m",
+        red: "\x1B[31m",
+        yellow: "\x1B[33m",
+        none: "\x1B[0m",
       };
 
-    this.jasmineStarted = function() {
+    this.jasmineStarted = function () {
       specCount = 0;
       failureCount = 0;
       pendingCount = 0;
-      print('Started');
+      print("Started");
       printNewline();
       timer.start();
     };
 
-    this.jasmineDone = function() {
+    this.jasmineDone = function () {
       printNewline();
       for (var i = 0; i < failedSpecs.length; i++) {
         specFailureDetails(failedSpecs[i]);
       }
 
-      if(specCount > 0) {
+      if (specCount > 0) {
         printNewline();
 
-        var specCounts = specCount + ' ' + plural('spec', specCount) + ', ' +
-          failureCount + ' ' + plural('failure', failureCount);
+        var specCounts =
+          specCount +
+          " " +
+          plural("spec", specCount) +
+          ", " +
+          failureCount +
+          " " +
+          plural("failure", failureCount);
 
         if (pendingCount) {
-          specCounts += ', ' + pendingCount + ' pending ' + plural('spec', pendingCount);
+          specCounts +=
+            ", " + pendingCount + " pending " + plural("spec", pendingCount);
         }
 
         print(specCounts);
       } else {
-        print('No specs found');
+        print("No specs found");
       }
 
       printNewline();
       var seconds = timer.elapsed() / 1000;
-      print('Finished in ' + seconds + ' ' + plural('second', seconds));
+      print("Finished in " + seconds + " " + plural("second", seconds));
 
       printNewline();
 
       onComplete(failureCount === 0);
     };
 
-    this.specDone = function(result) {
+    this.specDone = function (result) {
       specCount++;
 
-      if (result.status == 'pending') {
+      if (result.status == "pending") {
         pendingCount++;
-        print(colored('yellow', '*'));
+        print(colored("yellow", "*"));
         return;
       }
 
-      if (result.status == 'passed') {
-        print(colored('green', '.'));
+      if (result.status == "passed") {
+        print(colored("green", "."));
         return;
       }
 
-      if (result.status == 'failed') {
+      if (result.status == "failed") {
         failureCount++;
         failedSpecs.push(result);
-        print(colored('red', 'F'));
+        print(colored("red", "F"));
       }
     };
 
     return this;
 
     function printNewline() {
-      print('\n');
+      print("\n");
     }
 
     function colored(color, str) {
-      return showColors ? (ansi[color] + str + ansi.none) : str;
+      return showColors ? ansi[color] + str + ansi.none : str;
     }
 
     function plural(str, count) {
-      return count == 1 ? str : str + 's';
+      return count == 1 ? str : str + "s";
     }
 
     function repeat(thing, times) {
@@ -139,12 +147,12 @@ getJasmineRequireObj().ConsoleReporter = function() {
     }
 
     function indent(str, spaces) {
-      var lines = (str || '').split('\n');
+      var lines = (str || "").split("\n");
       var newArr = [];
       for (var i = 0; i < lines.length; i++) {
-        newArr.push(repeat(' ', spaces).join('') + lines[i]);
+        newArr.push(repeat(" ", spaces).join("") + lines[i]);
       }
-      return newArr.join('\n');
+      return newArr.join("\n");
     }
 
     function specFailureDetails(result) {
